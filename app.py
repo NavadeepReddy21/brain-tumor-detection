@@ -259,30 +259,127 @@ def predict_dashboard(img, name, age, gender):
     return result, img, prob_img, pdf_path
 
 
+# ===================== CUSTOM THEME & STYLING =====================
+theme = gr.themes.Soft(
+    primary_hue="teal",
+    secondary_hue="cyan",
+    neutral_hue="slate",
+    font=[gr.themes.GoogleFont("Inter"), "ui-sans-serif", "sans-serif"],
+).set(
+    body_background_fill="*neutral_50",
+    block_background_fill="white",
+    block_border_width="1px",
+    block_border_color="*neutral_200",
+    block_shadow="0 1px 3px rgba(0,0,0,0.08)",
+    block_radius="16px",
+    button_primary_background_fill="*primary_600",
+    button_primary_background_fill_hover="*primary_700",
+    button_primary_text_color="white",
+)
+
+custom_css = """
+#app-header {
+    background: linear-gradient(135deg, #0F766E 0%, #0891B2 100%);
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 16px rgba(15, 118, 110, 0.25);
+}
+#app-header h1 {
+    color: white !important;
+    font-size: 28px !important;
+    font-weight: 700 !important;
+    margin-bottom: 6px !important;
+}
+#app-header p {
+    color: rgba(255,255,255,0.9) !important;
+    font-size: 14.5px !important;
+    margin: 0 !important;
+}
+#disclaimer-box {
+    background: #FFFBEB;
+    border: 1px solid #FDE68A;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-size: 13px;
+    color: #92400E;
+    margin-bottom: 18px;
+}
+.panel-title {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+    color: #0F766E !important;
+    margin-bottom: 8px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+#analyze-btn {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    height: 48px !important;
+    border-radius: 10px !important;
+}
+#result-box textarea {
+    font-family: 'Inter', sans-serif !important;
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+}
+footer {visibility: hidden}
+"""
+
 # ===================== UI =====================
-with gr.Blocks(title="Brain Tumor Detection") as demo:
-    gr.Markdown("## 🧠 Brain Tumor Detection – Interactive Dashboard")
-    gr.Markdown(
-        "Upload a brain MRI scan to get an AI-assisted classification "
-        "(Glioma / Meningioma / Pituitary / No Tumor), along with a "
-        "downloadable diagnostic report.\n\n"
-        "**Disclaimer:** This is an educational AI demo, not a medical "
-        "diagnostic tool. Always consult a qualified radiologist/neurologist."
+with gr.Blocks(title="Brain Tumor Detection AI", theme=theme, css=custom_css) as demo:
+
+    with gr.Column(elem_id="app-header"):
+        gr.HTML(
+            "<h1>🧠 Brain Tumor Detection AI</h1>"
+            "<p>VGG16 deep learning model · MRI classification · "
+            "Automated diagnostic reporting</p>"
+        )
+
+    gr.HTML(
+        '<div id="disclaimer-box">⚠️ <b>Disclaimer:</b> This is an '
+        "educational AI demo, not a certified medical diagnostic tool. "
+        "Always consult a qualified radiologist or neurologist for an "
+        "actual diagnosis.</div>"
     )
 
-    with gr.Row():
-        with gr.Column():
-            name = gr.Textbox(label="Patient Name")
-            age = gr.Number(label="Age", value=25)
-            gender = gr.Dropdown(["Male", "Female", "Other"], label="Gender")
-            img_in = gr.Image(type="pil", label="Upload MRI Image")
-            btn = gr.Button("Analyze MRI", variant="primary")
+    with gr.Row(equal_height=False):
+        with gr.Column(scale=1, min_width=320):
+            gr.Markdown("Patient Information", elem_classes="panel-title")
+            with gr.Group():
+                name = gr.Textbox(label="Patient Name", placeholder="e.g. John Doe")
+                with gr.Row():
+                    age = gr.Number(label="Age", value=25)
+                    gender = gr.Dropdown(
+                        ["Male", "Female", "Other"], label="Gender", value="Male"
+                    )
 
-        with gr.Column():
-            result = gr.Textbox(label="Diagnosis & Findings", lines=12)
-            mri_out = gr.Image(label="Uploaded MRI")
-            prob_out = gr.Image(label="Probability Analysis")
-            pdf_out = gr.File(label="Download Diagnostic PDF")
+            gr.Markdown("MRI Scan", elem_classes="panel-title")
+            img_in = gr.Image(type="pil", label=None, height=260)
+
+            btn = gr.Button(
+                "🔍 Analyze MRI Scan", variant="primary", elem_id="analyze-btn"
+            )
+
+        with gr.Column(scale=1, min_width=380):
+            gr.Markdown("Diagnostic Result", elem_classes="panel-title")
+            result = gr.Textbox(
+                label=None, lines=10, elem_id="result-box", show_copy_button=True
+            )
+
+            with gr.Row():
+                mri_out = gr.Image(label="Uploaded Scan", height=200)
+                prob_out = gr.Image(label="Class Probabilities", height=200)
+
+            gr.Markdown("Report", elem_classes="panel-title")
+            pdf_out = gr.File(label="📄 Download Diagnostic PDF Report")
+
+    gr.HTML(
+        "<div style='text-align:center; color:#94A3B8; font-size:12px; "
+        "margin-top:24px;'>Built with TensorFlow &amp; Gradio · "
+        "Transfer learning on VGG16</div>"
+    )
 
     btn.click(
         predict_dashboard,
