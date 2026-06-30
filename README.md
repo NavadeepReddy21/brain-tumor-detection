@@ -21,21 +21,25 @@ auto-generated PDF diagnostic report.
 ├── app.py              # Gradio app — run this to launch the live demo
 ├── train.py            # Model training script (run separately, needs GPU + dataset)
 ├── requirements.txt    # Dependencies
-├── BrainTumor_VGG16_Final.h5   # Trained model weights (add this file — see below)
+├── BrainTumor_VGG16_Final.h5   # Trained model weights (tracked via Git LFS)
 └── README.md
 ```
 
 ## Model File
-The trained model (`BrainTumor_VGG16_Final.h5`) is **not included in this repo
-by default** if it's large. You have two options:
-
-1. **Git LFS** (recommended) — track the file with Git LFS so it lives in the repo.
-2. **External hosting** — upload the `.h5` to Hugging Face Hub / Google Drive and
-   download it inside `app.py` at startup.
+The trained model (`BrainTumor_VGG16_Final.h5`, ~157MB) is included in this
+repo via **Git LFS**. If you clone the repo, make sure you have Git LFS
+installed so the model file downloads correctly:
+```bash
+git lfs install
+git clone https://github.com/NavadeepReddy21/brain-tumor-detection.git
+```
+Without Git LFS, the cloned `.h5` file will just be a small pointer file and
+`app.py` will fail to load the model.
 
 ## Run Locally
 ```bash
-git clone https://github.com/<your-username>/brain-tumor-detection.git
+git lfs install
+git clone https://github.com/NavadeepReddy21/brain-tumor-detection.git
 cd brain-tumor-detection
 pip install -r requirements.txt
 python app.py
