@@ -190,12 +190,38 @@ def generate_pdf(name, age, gender, tumor, confidence, risk,
     return path
 
 
+def is_likely_mri(img: Image.Image, saturation_threshold: float = 25.0) -> bool:
+    """
+    Heuristic check to flag non-MRI inputs.
+
+    MRI scans are essentially grayscale (very low color saturation).
+    Regular photos (cars, people, etc.) have much higher saturation.
+    This is not a trained classifier - just a cheap sanity filter to catch
+    obviously wrong inputs before they're forced through the 4-class model.
+    """
+    hsv = img.convert("HSV")
+    _, s, _ = hsv.split()
+    avg_saturation = np.array(s).mean()
+    return avg_saturation < saturation_threshold
+
+
 # ===================== PREDICTION =====================
 def predict_dashboard(img, name, age, gender):
     if img is None:
         return "Please upload an MRI image.", None, None, None
 
-    img = img.convert("RGB").resize((IMG_SIZE, IMG_SIZE))
+    img = img.convert("RGB")
+
+    if not is_likely_mri(img):
+        warning = (
+            "⚠️ This doesn't look like a brain MRI scan (image has color "
+            "characteristics inconsistent with MRI imaging). The model is "
+            "only trained on grayscale brain MRI scans - results on other "
+            "image types are not meaningful. Please upload a valid MRI."
+        )
+        return warning, img, None, None
+
+    img = img.resize((IMG_SIZE, IMG_SIZE))
     arr = preprocess_input(np.expand_dims(image.img_to_array(img), axis=0))
 
     preds = model.predict(arr)[0]
