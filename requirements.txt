@@ -1,0 +1,9 @@
+tensorflow-cpu==2.15.0
+gradio==4.44.0
+numpy<2.0
+pillow
+opencv-python-headless
+matplotlib
+seaborn
+scikit-learn
+reportlab

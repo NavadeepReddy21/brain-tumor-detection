@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+*.pdf
+kaggle.json
+.DS_Store
+venv/
+.env
