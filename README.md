@@ -5,7 +5,7 @@ An AI-assisted brain MRI classifier that detects **Glioma**, **Meningioma**,
 Includes an interactive Gradio dashboard with probability breakdown and an
 auto-generated PDF diagnostic report.
 
-🔗 **Live demo:** [huggingface.co/spaces/Navadeep-21/brain-tumor-detection](https://huggingface.co/spaces/Navadeep-21/brain-tumor-detection)
+🔗 **Live demo:** [huggingface.co/spaces/Navadeep-21/brain-tumor-detection](https://navadeep-21-brain-tumor-detection.hf.space)
 
 ## Features
 - 4-class MRI classification (glioma / meningioma / pituitary / no tumor)
