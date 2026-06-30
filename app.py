@@ -364,9 +364,7 @@ with gr.Blocks(title="Brain Tumor Detection AI", theme=theme, css=custom_css) as
 
         with gr.Column(scale=1, min_width=380):
             gr.Markdown("Diagnostic Result", elem_classes="panel-title")
-            result = gr.Textbox(
-                label=None, lines=10, elem_id="result-box", show_copy_button=True
-            )
+            result = gr.Textbox(label=None, lines=10, elem_id="result-box")
 
             with gr.Row():
                 mri_out = gr.Image(label="Uploaded Scan", height=200)
